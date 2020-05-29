@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -28,9 +29,27 @@ public class MainInsta extends AppCompatActivity {
         bottomNavigationView=findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
         bottomNavigationView.setItemIconTintList(null);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_container,new HomeFragment())
-                .commit();
+       //check if there a target
+      Bundle intent=getIntent().getExtras();
+       if(intent!=null){
+           String publisher=intent.getString("publisherId");
+           SharedPreferences.Editor editor=getSharedPreferences("insta",0).edit();
+           editor.putString("publisher",publisher);
+           editor.apply();
+
+           getSupportFragmentManager().beginTransaction()
+                   .replace(R.id.main_container,new ProfileFragment())
+                   .commit();
+       }else{
+           getSupportFragmentManager().beginTransaction()
+                   .replace(R.id.main_container,new HomeFragment())
+                   .commit();
+       }
+
+       //
+
+
+
     }
 
 

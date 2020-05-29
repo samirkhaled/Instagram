@@ -1,6 +1,7 @@
 package samir.com.instagram.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import samir.com.instagram.CommentActivity;
 import samir.com.instagram.Models.Posts;
 import samir.com.instagram.Models.Users;
 import samir.com.instagram.R;
@@ -57,6 +59,8 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.ViewHolderPos
         //likes
         isLikes(holder.like,myPost.getPostId());
         NoLikes(holder.likes,myPost.getPostId());
+        viewComments(myPost.getPostId(),holder.comments);
+
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,10 +76,26 @@ public class PostAdapter  extends RecyclerView.Adapter<PostAdapter.ViewHolderPos
                 }
             }
         });
-
-
-
         //end likes
+        //add comments
+        holder.comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mcontext, CommentActivity.class);
+                intent.putExtra("postId",myPost.getPostId());
+                intent.putExtra("publisherId",myPost.getPublisher());
+                mcontext.startActivity(intent);
+            }
+        });
+        holder.comments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mcontext, CommentActivity.class);
+                intent.putExtra("postId",myPost.getPostId());
+                intent.putExtra("publisherId",myPost.getPublisher());
+                mcontext.startActivity(intent);
+            }
+        });
 
     }
 
@@ -176,5 +196,32 @@ private void NoLikes(final TextView likes, String pId){
 
 
   }
+
+  //view comments
+    private  void viewComments(String postId, final TextView textView ){
+        DatabaseReference reference=FirebaseDatabase.getInstance().getReference("Comments").child(postId);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount()==0){
+                    textView.setVisibility(View.GONE);
+                }else{
+                    textView.setText("View All "+ dataSnapshot.getChildrenCount()+" Comments");
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+    }
 
 }
