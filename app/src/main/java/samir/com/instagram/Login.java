@@ -73,18 +73,15 @@ FirebaseUser firebaseUser;
             }
         });
 
+        if(firebaseUser!=null){
+            startActivity(new Intent(Login.this,MainInsta.class));
+
+        }
+
+
         //end login
 
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-      if(firebaseUser!=null){
-          startActivity(new Intent(Login.this,MainInsta.class));
-
-      }
     }
 
     void doLogin(String Email, String password){

@@ -69,8 +69,7 @@ public class HomeFragment extends Fragment {
       Flist=new ArrayList<>();
       DatabaseReference reference=FirebaseDatabase.getInstance().getReference("Follow")
               .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-              .child("Followers");
-
+              .child("Following");
       reference.addValueEventListener(new ValueEventListener() {
           @Override
           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -91,24 +90,24 @@ public class HomeFragment extends Fragment {
 
 
     }
-
-
    private void readPosts(){
        DatabaseReference reference= FirebaseDatabase.getInstance().getReference("Posts");
-
-
        reference.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
               posts.clear();
               for(DataSnapshot snapshot:dataSnapshot.getChildren()){
                   Posts post=snapshot.getValue(Posts.class);
-                  for (String id:Flist){
-                      if(post.getPublisher().equals(id)){
-                          posts.add(post);
-                      }else if(post.getPublisher().equals(FirebaseAuth.getInstance().getUid())){
-                          posts.add(post);
+                  if(Flist.size()!=0) {
+                      for (String id : Flist) {
+                          if (post.getPublisher().equals(id)) {
+                              posts.add(post);
+                          } else if (post.getPublisher().equals(FirebaseAuth.getInstance().getUid())) {
+                              posts.add(post);
+                          }
                       }
+                  }else if(post.getPublisher().equals(FirebaseAuth.getInstance().getUid())){
+                      posts.add(post);
                   }
 
 

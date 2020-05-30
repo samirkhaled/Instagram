@@ -116,6 +116,7 @@ ProgressBar progressBar;
         hashMap.put("Comment",commentContent.getText().toString());
         hashMap.put("Publisher",firebaseUser.getUid());
         reference.push().setValue(hashMap);
+        addNotifications();
         commentContent.setText("");
 
     }
@@ -163,7 +164,18 @@ ProgressBar progressBar;
 
             }
         });
-
-
    }
+    private void addNotifications(){
+        DatabaseReference reference=FirebaseDatabase.getInstance().getReference("Notification").child(publisherId);
+        HashMap<String,Object> hashMap=new HashMap<>();
+        hashMap.put("postId",postID);
+        hashMap.put("userId",firebaseUser.getUid());
+        hashMap.put("comment","Commented: "+commentContent.getText().toString());
+        hashMap.put("isPost",true);
+        reference.push().setValue(hashMap);
+
+
+
+    }
+
 }
